@@ -1,11 +1,10 @@
 <!DOCTYPE html>
-
 <html lang="en">
 <head>
-<meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>Drive Mad 200 Levels - StrongdogXP</title>
-<style>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Drive Mad 200 Levels - StrongdogXP</title>
+    <style>
         html, body {
             margin: 0;
             padding: 0;
@@ -21,13 +20,42 @@
     </style>
 </head>
 <body>
-<iframe src="https://injex-2642ef349319.herokuapp.com/?id=19"></iframe>
+
+<iframe id="gameFrame" src="https://injex-2642ef349319.herokuapp.com/?id=19"></iframe>
+
 <script>
+    // Get a reference to the iframe element using its new ID
+    const gameIframe = document.getElementById('gameFrame');
 
-</script><script>
+    // This function sets the focus on the content inside the iframe
+    const focusGame = () => {
+        // We check to make sure the iframe and its content window exist before trying to focus
+        if (gameIframe && gameIframe.contentWindow) {
+            gameIframe.contentWindow.focus();
+        }
+    };
+
+    // --- Event Listeners to Automatically Focus the Game ---
+
+    // 1. Focus the game as soon as the main page has finished loading.
+    window.addEventListener('load', focusGame);
+
+    // 2. Focus the game whenever the user clicks back to this browser tab.
+    // This is the key fix for your issue.
+    window.addEventListener('focus', focusGame);
+
+    // 3. As a helpful extra, focus the game if the user clicks anywhere
+    // on the parent page's background.
+    document.body.addEventListener('click', focusGame, true);
+</script>
+
+<script>
     if (window.top === window.self) {
-    window.location.href = '../../../';
-}
+        // This line is commented out as it would cause a redirect loop if you open the file directly.
+        // If the original intention was to redirect from a sub-directory, it can be re-enabled.
+        // window.location.href = '../../../';
+    }
+</script>
 
-</script></body>
+</body>
 </html>
