@@ -24,35 +24,54 @@
 <iframe id="gameFrame" src="https://injex-2642ef349319.herokuapp.com/?id=19"></iframe>
 
 <script>
-    // Get a reference to the iframe element using its new ID
     const gameIframe = document.getElementById('gameFrame');
+    
+    // This variable will hold the ID of our repeating interval
+    // so we can start and stop it.
+    let focusInterval = null;
 
-    // This function sets the focus on the content inside the iframe
+    // This function sets focus on the game inside the iframe.
     const focusGame = () => {
-        // We check to make sure the iframe and its content window exist before trying to focus
         if (gameIframe && gameIframe.contentWindow) {
             gameIframe.contentWindow.focus();
         }
     };
 
-    // --- Event Listeners to Automatically Focus the Game ---
+    // This function STARTS the aggressive focus loop.
+    const startForcingFocus = () => {
+        // Clear any existing interval to prevent duplicates.
+        if (focusInterval !== null) {
+            clearInterval(focusInterval);
+        }
+        // Start a new interval that calls focusGame every 100ms.
+        focusInterval = setInterval(focusGame, 100);
+    };
 
-    // 1. Focus the game as soon as the main page has finished loading.
+    // This function STOPS the aggressive focus loop.
+    const stopForcingFocus = () => {
+        if (focusInterval !== null) {
+            clearInterval(focusInterval);
+            focusInterval = null; // Reset the variable
+        }
+    };
+
+    // --- Event Listeners to Control the Focus Lock ---
+
+    // 1. Give the game an initial focus when the page loads.
     window.addEventListener('load', focusGame);
 
-    // 2. Focus the game whenever the user clicks back to this browser tab.
-    // This is the key fix for your issue.
-    window.addEventListener('focus', focusGame);
+    // 2. When the mouse enters the iframe, start the focus lock.
+    // This also handles clicks, as you must hover over the frame to click it.
+    gameIframe.addEventListener('mouseenter', startForcingFocus);
 
-    // 3. As a helpful extra, focus the game if the user clicks anywhere
-    // on the parent page's background.
-    document.body.addEventListener('click', focusGame, true);
+    // 3. When the mouse leaves the iframe, stop the focus lock.
+    // This is crucial to allow you to interact with other things.
+    gameIframe.addEventListener('mouseleave', stopForcingFocus);
+
 </script>
 
 <script>
     if (window.top === window.self) {
-        // This line is commented out as it would cause a redirect loop if you open the file directly.
-        // If the original intention was to redirect from a sub-directory, it can be re-enabled.
         // window.location.href = '../../../';
     }
 </script>
